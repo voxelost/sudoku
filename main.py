@@ -1,23 +1,27 @@
 import time
-import os
 import json
 
-from sympy import per
+import requests
+
 from validator import valid_board
 
 def get_puzzle(level: str = 'easy') -> dict:
-    result = os.popen(f"curl 'https://sudoku.com/api/level/{level}' \
-        -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:92.0) \
-        Gecko/20100101 Firefox/92.0' -H 'Accept: */*' -H \
-        'Accept-Language: en-US,en;q=0.7,pl;q=0.3' --compressed -H \
-        'X-Requested-With: XMLHttpRequest' -H 'DNT: 1' -H 'Alt-Used: sudoku.com' \
-        -H 'Connection: keep-alive' -H 'Referer: https://sudoku.com/' -H \
-        'Cookie: device_view=full; \
-        mode=classic; checkMistakes=true; sdk_adw=1; sdk_analytics=1; sdk_confirm=1' -H \
-        'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-origin' \
-        -H 'TE: trailers'")
-    data = json.loads(result.read())
-    return data
+    return requests.get(
+        f'https://sudoku.com/api/level/{level}',
+        headers={
+            'X-Requested-With': 'XMLHttpRequest',
+            'cookies': json.dumps({
+                'device_view': 'full',
+                'mode': 'classic',
+                'checkMistakes': True,
+                'sdk_adw': 1,
+                'sdk_analytics': 1,
+                'sdk_confirm': 1
+            })
+        },
+    ).json()
+
+    
 
 class Sudoku():
     # puzzle and solution are strings representing the sudoku board read from top-left to right
@@ -122,7 +126,7 @@ class Sudoku():
     def __relations_and_residuals(self):
         print('relations and residuals')
 
-def main():
+if __name__ == '__main__':
     difficulties = ['easy', 'medium', 'hard', 'expert', 'evil']
 
     puzzle = get_puzzle(difficulties[0])
@@ -132,6 +136,3 @@ def main():
     
     print('success' if sudoku.check_with_solutions() else 'failure')
 
-
-if __name__ == '__main__':
-    main()
