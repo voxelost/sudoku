@@ -1,6 +1,3 @@
-from sqlalchemy import false
-
-
 def valid_row(row, grid):
   temp = grid[row]
   temp = list(filter(lambda a: a != 0, temp))

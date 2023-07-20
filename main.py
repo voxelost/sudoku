@@ -1,7 +1,8 @@
-from copy import copy
 import time
 import os
 import json
+
+from sympy import per
 from validator import valid_board
 
 def get_puzzle(level: str = 'easy') -> dict:
@@ -107,6 +108,7 @@ class Sudoku():
                 force_flag = False
 
             i += 1
+
 
     def __stochastic_search(self):
         print('stochastic')
